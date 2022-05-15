@@ -1,0 +1,10 @@
+name: PlaytimePlugin
+version: 1.0
+author: ben_staehle
+api-version: 1.14
+main: org.ben.plugin.PP
+commands:
+    playtime:
+      description: A command to track playtime
+      usage: /<command> (player)
+      aliases: [pt, playtime, pp]
