@@ -20,9 +20,11 @@ package org.ben.plugin;
 import org.ben.plugin.command.PluginCommand;
 import org.ben.plugin.command.PluginTabCompleter;
 import org.ben.plugin.event.PPEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ben.plugin.io.*;
+import java.util.ArrayList;
 
 public class PP extends JavaPlugin{
     protected PluginCommand c = new PluginCommand();
@@ -40,6 +42,20 @@ public class PP extends JavaPlugin{
         }
         getCommand("playtime").setExecutor(c);
         getCommand("playtime").setTabCompleter(new PluginTabCompleter());
+
+        Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                ArrayList<PlayerTime> online = new ArrayList<PlayerTime>(PPEvent.online.values());
+                for(PlayerTime t : online) {
+                    try {
+                        WriteFile.updateEntry(t);
+                    } catch(Exception e) {
+
+                    }
+                }
+            }
+        }, 0L, 1800000L); //1800000L
     }
 
     @Override
