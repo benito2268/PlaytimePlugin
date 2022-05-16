@@ -1,4 +1,6 @@
 /**
+ * COPYRIGHT DISCLAIMER:
+ * 
  * This file is part of PlaytimePlugin.
  * 
  * PlaytimePlugin is free software: you can redistribute 
@@ -17,6 +19,7 @@
  */
 
 package org.ben.plugin.command;
+
 import org.ben.plugin.event.PPEvent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -26,8 +29,12 @@ import org.ben.plugin.io.ParseFile;
 import org.ben.plugin.io.PlayerTime;
 import org.ben.plugin.io.WriteFile;
 import org.bukkit.ChatColor;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Random;
 
 public class PluginCommand implements CommandExecutor {
+    protected Random rand = new Random();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -43,8 +50,8 @@ public class PluginCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.GREEN + "View the code here: https://github.com/benito2268/PlaytimePlugin");
                 } else if(args[0].equals("~debug")) {
                     p.sendMessage(ChatColor.DARK_PURPLE + "[DEBUG - SYSTEM INFO]");
-                    p.sendMessage(ChatColor.DARK_PURPLE + "osname=" + System.getProperty("os-name"));
-                    p.sendMessage(ChatColor.DARK_PURPLE+ "javaversion=" + System.getProperty("java.version"));
+                    p.sendMessage(ChatColor.DARK_PURPLE + "processorinfo=" + System.getProperty("os-arch") + " " + Runtime.getRuntime().availableProcessors() + " processors");
+                    p.sendMessage(ChatColor.DARK_PURPLE + "javaversion=" + System.getProperty("java.version"));
                     p.sendMessage(ChatColor.DARK_PURPLE + "runtime=" + System.getProperty("java.runtime.name") + " " + System.getProperty("java.runtime.version"));
                     p.sendMessage(ChatColor.DARK_PURPLE + "virutalmachine=" + System.getProperty("sun.management.compiler"));
                     p.sendMessage(ChatColor.DARK_PURPLE + "[DEBUG - PROGRAM]");
@@ -52,66 +59,129 @@ public class PluginCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.DARK_PURPLE + "file=" + WriteFile.dataFile.toString());
                     p.sendMessage(ChatColor.DARK_PURPLE + "online=" + PPEvent.online.size());
                     p.sendMessage(ChatColor.DARK_PURPLE + "cmd=" + this.toString());
-                } else {
-                    PlayerTime temp = new PlayerTime(args[0].trim());
-                boolean canRead = false;
-                try {
-                    canRead = ParseFile.existsInFile(WriteFile.dataFile, temp);
-                } catch(Exception e) {
-                    p.sendMessage(ChatColor.RED + "[PP] pp error: FileInputStream read failed -> try again or yell at L3gob3rt");
-                    return false;
-                }
-                if(!canRead) {
-                    p.sendMessage(ChatColor.RED + "[PP] pp error: player " + args[0] + " was not found in the server's history");
-                    p.sendMessage(ChatColor.RED + "playtime can only be logged from the point the plugin was installed and forward (have they logged in since then?)");
-                    return false;
-                }
-                PlayerTime pt = new PlayerTime("NOT_INITIALIZED");
-                long playtime = 0;
-                try {
-                    if(PPEvent.online.containsKey(args[0].trim())) {
-                        pt = PPEvent.online.get(args[0].trim());
-                        playtime = pt.getTotalTime();
-                        //extra write to be safe
-                        try {
-                            WriteFile.updateEntry(pt);
-                        } catch(Exception e) {
-                            //¯\_(ツ)_/¯ guess now's not the time
+                } else if (args[0].equals("~score")) {
+                    try {
+                        ArrayList<String> toReturn = new ArrayList<>();
+                        for(String n : ParseFile.getNamesInFile(WriteFile.dataFile)) {
+                            String toRet = getTwoArgPlayerMessage(new String[]{n}, p);
+                            if(toRet.equals("FAILED")) {
+                                return false;
+                            } else {
+                                toReturn.add(toRet);
+                            }
                         }
-                    } else {
-                        pt = ParseFile.getPlayerTimeInFile(WriteFile.dataFile, args[0].trim());
-                        playtime = pt.getTotalTimeInFile();
+                        toReturn.sort(new Comparator<String>() {
+                            @Override
+                            public int compare(String s1, String s2) {
+                                String[] s1Arr = s1.split(" ");
+                                String[] s2Arr = s2.split(" ");
+                                String arg1 = s1Arr[3]+s1Arr[4]+s1Arr[5];
+                                String arg2 = s2Arr[3]+s2Arr[4]+s2Arr[5];
+                                if(arg1.compareTo(arg2) > 1) {
+                                    return -1;
+                                } else if(arg1.compareTo(arg2) < 0) {
+                                    return 1;
+                                } else {
+                                    return arg1.compareTo(arg2);
+                                }
+                            }
+                        });
+                        for(int i = 0; i < toReturn.size(); i++) {
+                            if(i == 0) {
+                                p.sendMessage(ChatColor.GOLD + "[NUMBER ONE PP] " + toReturn.get(i));
+                            } else {
+                                p.sendMessage(ChatColor.GREEN + "[" + (i+1) + "] " + toReturn.get(i));
+                            }
+                        }
+                    } catch(Exception e) {
+                        p.sendMessage("[pp error] couldn't this remaining data from file -> try again");
                     }
-                } catch(Exception e) {
-                    p.sendMessage(ChatColor.RED + "[PP] pp error: FileInputStream read failed -> try again or yell at L3gob3rt");
-                    return false;
-                }
-                final long seconds = (playtime / 1000) % 60;
-                final long minutes = ((playtime / (1000*60)) % 60);
-                final long hours = ((playtime / (1000*60*60)) % 24);
-                String message = ChatColor.BLUE + "[PP] " + args[0].trim() + " has played " + hours + "h " + minutes + "m " + seconds + "s";
-                p.sendMessage(message);
-                }
-                
-                
+                } else if(args[0].equals("~realscore")) {
+                    for(int i = 0; i < 10; i++) {
+                        if(i == 0) {
+                            p.sendMessage(ChatColor.GOLD + "[NUMBER ONE PP] " + ChatColor.BLUE + "L3gob3rt has played 999h999m" + (999 - i) + "s");
+                        } else {
+                            p.sendMessage(ChatColor.GREEN + "[" + (i+1) + "] " + ChatColor.BLUE + "L3gob3rt has played 999h999m" + (999 - i) + "s");
+                        }
+                    }
+                } else {    
+                   String toRet = getTwoArgPlayerMessage(args, p);
+                   if(toRet.equals("FAILED")) {
+                       return false;
+                   } else {
+                       p.sendMessage(toRet);
+                   }
+                }  
             } else if(args.length == 0){
-                PlayerTime pt = PPEvent.online.get(p.getName().trim());
-                long playtime = pt.getTotalTime();
-                final long seconds = (playtime / 1000) % 60;
-                final long minutes = ((playtime / (1000*60)) % 60);
-                final long hours = ((playtime / (1000*60*60)) % 24);
+                String toSend = getOneArgPlayerMessage(p);
+                p.sendMessage(toSend);
+                int i = rand.nextInt(100);
+                if(Integer.parseInt(toSend.split(" ")[4].substring(0, 1)) < 1) {
+                    if(i < 25) {p.sendMessage(ChatColor.BOLD + "[pp] pp too small, time to grind more Minecraft!");}
+                } else if(Integer.parseInt(toSend.split(" ")[4].substring(0, 1)) > 4) {
+                    if(i < 25) {p.sendMessage(ChatColor.BOLD + "[PP] pp too large, time to touch some grass!");}
+                }
+            } else {
+                p.sendMessage(ChatColor.RED + "[pp error] bad syntax -> try " + command.getUsage());
+            }
+        }
+        return true;
+    }
+
+    public String getTwoArgPlayerMessage(String[] args, Player p) {
+        PlayerTime temp = new PlayerTime(args[0].trim());
+        boolean canRead = false;
+        try {
+            canRead = ParseFile.existsInFile(WriteFile.dataFile, temp);
+        } catch(Exception e) {
+            p.sendMessage(ChatColor.RED + "[pp error] FileInputStream read failed -> try again or yell at L3gob3rt");
+            return "FAILED";
+        }
+        if(!canRead) {
+            p.sendMessage(ChatColor.RED + "[pp error] player " + args[0] + " was not found in the server's history");
+            p.sendMessage(ChatColor.RED + "playtime can only be logged from the point the plugin was installed and forward (have they logged in since then?)");
+            return "FAILED";
+        }
+        PlayerTime pt = new PlayerTime("NOT_INITIALIZED");
+        long playtime = 0;
+        try {
+            if(PPEvent.online.containsKey(args[0].trim())) {
+                pt = PPEvent.online.get(args[0].trim());
+                playtime = pt.getTotalTime();
                 //extra write to be safe
                 try {
                     WriteFile.updateEntry(pt);
                 } catch(Exception e) {
                     //¯\_(ツ)_/¯ guess now's not the time
                 }
-                String message = ChatColor.BLUE + "[PP] You have played " + hours + "h " + minutes + "m " + seconds + "s";
-                p.sendMessage(message);
             } else {
-                p.sendMessage(ChatColor.RED + "[PP] pp error: bad syntax -> try " + command.getUsage());
+                pt = ParseFile.getPlayerTimeInFile(WriteFile.dataFile, args[0].trim());
+                playtime = pt.getTotalTimeInFile();
             }
+        } catch(Exception e) {
+            p.sendMessage(ChatColor.RED + "[pp error] FileInputStream read failed -> try again or yell at L3gob3rt");
+            return "FAILED";
         }
-        return true;
+        final long seconds = (playtime / 1000) % 60;
+        final long minutes = ((playtime / (1000*60)) % 60);
+        final long hours = ((playtime / (1000*60*60)) % 24);
+        String message = ChatColor.BLUE + "[PP] " + args[0].trim() + " has played " + hours + "h " + minutes + "m " + seconds + "s";
+        return message;
+    }
+
+    public String getOneArgPlayerMessage(Player p) {
+        PlayerTime pt = PPEvent.online.get(p.getName().trim());
+        long playtime = pt.getTotalTime();
+        final long seconds = (playtime / 1000) % 60;
+        final long minutes = ((playtime / (1000*60)) % 60);
+        final long hours = ((playtime / (1000*60*60)) % 24);
+        //extra write to be safe
+        try {
+            WriteFile.updateEntry(pt);
+        } catch(Exception e) {
+            //¯\_(ツ)_/¯ guess now's not the time
+        }
+        String message = ChatColor.BLUE + "[PP] You have played " + hours + "h " + minutes + "m " + seconds + "s";
+        return message;
     }
 }

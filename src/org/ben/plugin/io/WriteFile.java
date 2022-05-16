@@ -1,4 +1,6 @@
 /**
+ * COPYRIGHT DISCLAIMER:
+ * 
  * This file is part of PlaytimePlugin.
  * 
  * PlaytimePlugin is free software: you can redistribute 
@@ -17,6 +19,7 @@
  */
 
 package org.ben.plugin.io;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.BufferedReader;

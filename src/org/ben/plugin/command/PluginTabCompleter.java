@@ -1,4 +1,6 @@
 /**
+ * COPYRIGHT DISCLAIMER:
+ * 
  * This file is part of PlaytimePlugin.
  * 
  * PlaytimePlugin is free software: you can redistribute 
@@ -15,7 +17,9 @@
  * @author Ben Staehle
  * @date 5/15/22
  */
+
 package org.ben.plugin.command;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +38,7 @@ public class PluginTabCompleter implements TabCompleter{
             try {
                 toRet = ParseFile.getNamesInFile(WriteFile.dataFile);
                 toRet.add("~info");
-                toRet.add("~debug");
+                toRet.add("~score");
                 return toRet;
             } catch(Exception e) {
                 return toRet;

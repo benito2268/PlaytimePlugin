@@ -1,5 +1,6 @@
-package org.ben.plugin;
 /**
+ * COPYRIGHT DISCLAIMER:
+ * 
  * This file is part of PlaytimePlugin.
  * 
  * PlaytimePlugin is free software: you can redistribute 
@@ -17,14 +18,18 @@ package org.ben.plugin;
  * @date 5/15/22
  */
 
+package org.ben.plugin;
+
 import org.ben.plugin.command.PluginCommand;
 import org.ben.plugin.command.PluginTabCompleter;
 import org.ben.plugin.event.PPEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.ben.plugin.io.*;
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
 
 public class PP extends JavaPlugin{
     protected PluginCommand c = new PluginCommand();
@@ -32,30 +37,31 @@ public class PP extends JavaPlugin{
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new PPEvent(), this);
         getServer().getConsoleSender().sendMessage(
-            ChatColor.GREEN + "[PP] yo the plugin is on");
+            ChatColor.GREEN + "[pp success] yo the plugin is on");
         try {
             WriteFile.createFile();
-            getServer().getConsoleSender().sendMessage("The dataFile loaded was... " + WriteFile.dataFile.toString());
+            getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[pp info] The dataFile loaded was... " + WriteFile.dataFile.toString());
             getServer().getConsoleSender().sendMessage(WriteFile.dataFile.getName());
         } catch(Exception e) {
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[PP] fatal error loading plugin pp");
+            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[pp error] fatal error loading plugin pp");
         }
         getCommand("playtime").setExecutor(c);
         getCommand("playtime").setTabCompleter(new PluginTabCompleter());
 
-        Bukkit.getScheduler().scheduleAsyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<PlayerTime> online = new ArrayList<PlayerTime>(PPEvent.online.values());
-                for(PlayerTime t : online) {
-                    try {
-                        WriteFile.updateEntry(t);
-                    } catch(Exception e) {
-
-                    }
+        ScheduledExecutorService autosave = Executors.newSingleThreadScheduledExecutor();
+        autosave.scheduleAtFixedRate(() -> {
+            ArrayList<PlayerTime> onlinePlayers = new ArrayList<>(PPEvent.online.values());
+            getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[pp info] autosaving...");
+            for(PlayerTime p : onlinePlayers) {
+                try {
+                    WriteFile.updateEntry(p);
+                } catch(Exception e) {
+                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "[pp error] autosave failed for one or more players, will reattempt in 30 minutes");
+                    break;
                 }
             }
-        }, 0L, 1800000L); //1800000L
+            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[pp success] autosave sucessful");
+        }, 300, 1800, TimeUnit.SECONDS);
     }
 
     @Override

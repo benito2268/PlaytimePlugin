@@ -1,4 +1,6 @@
 /**
+ * COPYRIGHT DISCLAIMER:
+ * 
  * This file is part of PlaytimePlugin.
  * 
  * PlaytimePlugin is free software: you can redistribute 
@@ -17,8 +19,8 @@
  */
 
 package org.ben.plugin;
-import java.io.File;
 
+import java.io.File;
 import org.ben.plugin.io.ParseFile;
 import org.ben.plugin.io.PlayerTime;
 import org.ben.plugin.io.WriteFile;
