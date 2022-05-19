@@ -38,7 +38,7 @@ public class ParseFile {
         }
     }
 
-    public static boolean existsInFile(File f, PlayerTime p) throws Exception{
+    public static synchronized boolean existsInFile(File f, PlayerTime p) throws Exception{
         BufferedReader br = new BufferedReader(new FileReader(f.getName()));
         String line = "";
         while((line = br.readLine()) != null) {

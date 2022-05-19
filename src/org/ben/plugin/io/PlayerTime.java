@@ -65,11 +65,15 @@ public class PlayerTime {
         return System.currentTimeMillis() - loginTime;
     }
 
+    public long getLoginTime() {
+        return this.loginTime;
+    }
+
     public void setTimeImmediate(long newTime) {
         loginTime = newTime;
     }
 
-    public void login() throws Exception{
+    public synchronized void login() throws Exception{
         this.loginTime = System.currentTimeMillis();
         String[] tokens = ParseFile.getLineInFile(this.inFile, this).split("~");
         this.totalTimeAtLogin = Integer.parseInt(tokens[2]);

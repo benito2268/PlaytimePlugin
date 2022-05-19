@@ -32,6 +32,7 @@ import org.bukkit.ChatColor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class PluginCommand implements CommandExecutor {
     protected Random rand = new Random();
@@ -62,6 +63,7 @@ public class PluginCommand implements CommandExecutor {
                 } else if (args[0].equals("~score")) {
                     try {
                         ArrayList<String> toReturn = new ArrayList<>();
+                        saveAll();
                         for(String n : ParseFile.getNamesInFile(WriteFile.dataFile)) {
                             String toRet = getTwoArgPlayerMessage(new String[]{n}, p);
                             if(toRet.equals("FAILED")) {
@@ -75,14 +77,14 @@ public class PluginCommand implements CommandExecutor {
                             public int compare(String s1, String s2) {
                                 String[] s1Arr = s1.split(" ");
                                 String[] s2Arr = s2.split(" ");
-                                String arg1 = s1Arr[3]+s1Arr[4]+s1Arr[5];
-                                String arg2 = s2Arr[3]+s2Arr[4]+s2Arr[5];
-                                if(arg1.compareTo(arg2) > 1) {
+                                String arg1 = s1Arr[4]+s1Arr[5]+s1Arr[6].trim();
+                                String arg2 = s2Arr[4]+s2Arr[5]+s2Arr[6].trim();
+                                if(arg1.compareTo(arg2) > 0) {
                                     return -1;
                                 } else if(arg1.compareTo(arg2) < 0) {
                                     return 1;
                                 } else {
-                                    return arg1.compareTo(arg2);
+                                    return 0;
                                 }
                             }
                         });
@@ -118,7 +120,7 @@ public class PluginCommand implements CommandExecutor {
                 int i = rand.nextInt(100);
                 if(Integer.parseInt(toSend.split(" ")[4].substring(0, 1)) < 1) {
                     if(i < 25) {p.sendMessage(ChatColor.BOLD + "[pp] pp too small, time to grind more Minecraft!");}
-                } else if(Integer.parseInt(toSend.split(" ")[4].substring(0, 1)) > 4) {
+                } else if(Integer.parseInt(toSend.split(" ")[4].substring(0, 1)) > 10) {
                     if(i < 25) {p.sendMessage(ChatColor.BOLD + "[PP] pp too large, time to touch some grass!");}
                 }
             } else {
@@ -162,9 +164,11 @@ public class PluginCommand implements CommandExecutor {
             p.sendMessage(ChatColor.RED + "[pp error] FileInputStream read failed -> try again or yell at L3gob3rt");
             return "FAILED";
         }
-        final long seconds = (playtime / 1000) % 60;
-        final long minutes = ((playtime / (1000*60)) % 60);
-        final long hours = ((playtime / (1000*60*60)) % 24);
+        final long hours = TimeUnit.MILLISECONDS.toHours(playtime);
+        playtime -= TimeUnit.HOURS.toMillis(hours);
+        final long minutes = TimeUnit.MILLISECONDS.toMinutes(playtime);
+        playtime -= TimeUnit.MINUTES.toMillis(minutes);
+        final long seconds = TimeUnit.MILLISECONDS.toSeconds(playtime);
         String message = ChatColor.BLUE + "[PP] " + args[0].trim() + " has played " + hours + "h " + minutes + "m " + seconds + "s";
         return message;
     }
@@ -172,9 +176,11 @@ public class PluginCommand implements CommandExecutor {
     public String getOneArgPlayerMessage(Player p) {
         PlayerTime pt = PPEvent.online.get(p.getName().trim());
         long playtime = pt.getTotalTime();
-        final long seconds = (playtime / 1000) % 60;
-        final long minutes = ((playtime / (1000*60)) % 60);
-        final long hours = ((playtime / (1000*60*60)) % 24);
+        final long hours = TimeUnit.MILLISECONDS.toHours(playtime);
+        playtime -= TimeUnit.HOURS.toMillis(hours);
+        final long minutes = TimeUnit.MILLISECONDS.toMinutes(playtime);
+        playtime -= TimeUnit.MINUTES.toMillis(minutes);
+        final long seconds = TimeUnit.MILLISECONDS.toSeconds(playtime);;
         //extra write to be safe
         try {
             WriteFile.updateEntry(pt);
@@ -183,5 +189,16 @@ public class PluginCommand implements CommandExecutor {
         }
         String message = ChatColor.BLUE + "[PP] You have played " + hours + "h " + minutes + "m " + seconds + "s";
         return message;
+    }
+
+    public static void saveAll() {
+        ArrayList<PlayerTime> onlinePlayers = new ArrayList<>(PPEvent.online.values());
+        for(PlayerTime p : onlinePlayers) {
+            try {
+                WriteFile.updateEntry(p);
+            } catch(Exception e) {
+                break;
+            }
+            }
     }
 }

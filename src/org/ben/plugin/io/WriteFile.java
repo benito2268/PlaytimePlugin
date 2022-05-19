@@ -38,7 +38,7 @@ public class WriteFile {
         return dataFile;
     }
 
-    public static void newEntry(PlayerTime p) throws Exception {
+    public static synchronized void newEntry(PlayerTime p) throws Exception {
         if(!dataFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified");}
         BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile.getName(), true));
         if(!ParseFile.existsInFile(dataFile, p)) {
