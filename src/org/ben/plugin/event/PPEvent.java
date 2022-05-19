@@ -23,11 +23,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent;
 import org.ben.plugin.io.PlayerTime;
 import org.ben.plugin.io.WriteFile;
 import java.util.Hashtable;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerEggThrowEvent;
+import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import java.util.Random;
 import org.bukkit.ChatColor;
 import org.ben.plugin.thread.JoinThread;
@@ -61,7 +64,40 @@ public class PPEvent implements Listener {
         Random r = new Random();
         int i = r.nextInt(100);
         if(i == 1) {
-            player.sendMessage(ChatColor.RED + "[pp problem] you egg - lose 10 pp");
+            player.sendMessage(ChatColor.RED + "[bad pp] you egg - lose 10 pp");
+            PPEvent.online.get(player.getName()).setTimeImmediate(PPEvent.online.get(player.getName()).getLoginTime() + 10);
+        }
+    }
+
+    @EventHandler
+    public static void onPlayerBedEnterEvent(PlayerBedEnterEvent e) {
+        Player player = e.getPlayer();
+        Random r = new Random();
+        int i = r.nextInt(100);
+        if(i == 1) {
+            player.sendMessage(ChatColor.GREEN + "[good pp] you find 10 pp under the pillow - gain 10 pp");
+            PPEvent.online.get(player.getName()).setTimeImmediate(PPEvent.online.get(player.getName()).getLoginTime() - 10);
+        }
+    }
+
+    @EventHandler
+    public static void onPlayerHarvestEvent(PlayerHarvestBlockEvent e) {
+        Player player = e.getPlayer();
+        Random r = new Random();
+        int i = r.nextInt(10000);
+        if(i == 1) {
+            player.sendMessage(ChatColor.GREEN + "[good pp] you discover a shiny rock, it's radioactive, it's 10 pp - gain 10 pp (you are insanely lucky)");
+            PPEvent.online.get(player.getName()).setTimeImmediate(PPEvent.online.get(player.getName()).getLoginTime() - 10);
+        }
+    }
+
+    @EventHandler
+    public static void onPlayerResourcePackStatusEvent(PlayerResourcePackStatusEvent e) {
+        Player player = e.getPlayer();
+        Random r = new Random();
+        int i = r.nextInt(100);
+        if(i == 1) {
+            player.sendMessage(ChatColor.RED + "[bad pp] you turn on your x-ray pack, a bird swoops down and takes something from your pocket, it stole 10 pp - lose 10 pp");
             PPEvent.online.get(player.getName()).setTimeImmediate(PPEvent.online.get(player.getName()).getLoginTime() + 10);
         }
     }
