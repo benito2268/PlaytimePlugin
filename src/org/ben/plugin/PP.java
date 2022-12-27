@@ -1,21 +1,12 @@
 /**
- * COPYRIGHT DISCLAIMER:
+ * a note:
+ * the pp plugin is free software and comes with no warranty whatsoever. My claims of functionality
+ * are purely a figment of your imagination. All rights belong to their respective owners.
  * 
- * This file is part of PlaytimePlugin.
- * 
- * PlaytimePlugin is free software: you can redistribute 
- * it and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * PlaytimePlugin is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with PlaytimePlugin. If not, see <https://www.gnu.org/licenses/>.
+ * Ha. there now you can't sue me when it doesn't work :)
  *
  * @author Ben Staehle
- * @date 5/15/22
+ * @date 12/26/22
  */
 
 package org.ben.plugin;
@@ -25,14 +16,22 @@ import org.ben.plugin.command.PluginTabCompleter;
 import org.ben.plugin.event.PPEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.ben.plugin.io.*;
+import org.ben.plugin.drive.Backup;
+import org.bukkit.Bukkit;
+import org.bukkit.command.ConsoleCommandSender;
 import java.util.ArrayList;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Executors;
 
 public class PP extends JavaPlugin{
     protected PluginCommand c = new PluginCommand();
+    protected PP PlugRef = this;
+
+    private BukkitTask autosave;
+    private BukkitTask backupWarn;
+    private BukkitTask backup;
+
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new PPEvent(), this);
@@ -40,28 +39,60 @@ public class PP extends JavaPlugin{
             ChatColor.GREEN + "[pp success] yo the plugin is on");
         try {
             WriteFile.createFile();
+            WriteFile.createStevenFile();
+            WriteFile.createSimonFile();
             getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[pp info] The dataFile loaded was... " + WriteFile.dataFile.toString());
-            getServer().getConsoleSender().sendMessage(WriteFile.dataFile.getName());
         } catch(Exception e) {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[pp error] fatal error loading plugin pp");
         }
         getCommand("playtime").setExecutor(c);
         getCommand("playtime").setTabCompleter(new PluginTabCompleter());
 
-        ScheduledExecutorService autosave = Executors.newSingleThreadScheduledExecutor();
-        autosave.scheduleAtFixedRate(() -> {
-            ArrayList<PlayerTime> onlinePlayers = new ArrayList<>(PPEvent.online.values());
-            getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[pp info] autosaving...");
-            for(PlayerTime p : onlinePlayers) {
-                try {
-                    WriteFile.updateEntry(p);
-                } catch(Exception e) {
-                    getServer().getConsoleSender().sendMessage(ChatColor.RED + "[pp error] autosave failed for one or more players, will reattempt in 30 minutes");
-                    break;
+        //start the backup service
+        autosave = new BukkitRunnable() {
+            @Override
+            public void run() {
+                ArrayList<PlayerTime> onlinePlayers = new ArrayList<>(PPEvent.online.values());
+                getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[pp info] autosaving...");
+                for(PlayerTime p : onlinePlayers) {
+                    try {
+                        WriteFile.updateEntry(p);
+                        ConsoleCommandSender sender = getServer().getConsoleSender();
+                        Bukkit.dispatchCommand(sender, "save-all");
+                    } catch(Exception e) {
+                        e.printStackTrace();
+                        getServer().getConsoleSender().sendMessage(ChatColor.RED + "[pp error] autosave failed for one or more players, will reattempt in 30 minutes");
+                        break;
+                    }
+                
+                    getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[pp success] autosave sucessful");
                 }
             }
-            getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[pp success] autosave sucessful");
-        }, 300, 1800, TimeUnit.SECONDS);
+        }.runTaskTimer(this, 20L * 1800L, 20L * 1800L);
+
+        backupWarn = new BukkitRunnable() {
+            @Override
+            public void run() {
+                getServer().broadcastMessage(ChatColor.GOLD + "[pp 5 minute warning] the server is backing up in about 5 minutes");
+                getServer().broadcastMessage(ChatColor.GOLD + "all progress will be saved but it may freeze for 10-20 seconds during the upload");    
+            }
+        }.runTaskTimer(this, 20L * 1500L, 20L * 86400L);
+
+
+        backup = new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    Bukkit.dispatchCommand(getServer().getConsoleSender(), "save-all");
+                    getServer().broadcastMessage(ChatColor.RED + "[pp alert] the server is backing up! Don't worry your data is saved");
+                    getServer().broadcastMessage(ChatColor.RED + "but the server may freeze for 10-20 seconds during the upload");
+        
+                    Backup.backup(PlugRef);
+                } catch(Exception e) {
+                    getServer().broadcastMessage(ChatColor.RED + e.getClass().toString() + e.getMessage());
+                }
+            }
+        }.runTaskTimer(this, 20L * 1800L, 20L * 86400L);
     }
 
     @Override

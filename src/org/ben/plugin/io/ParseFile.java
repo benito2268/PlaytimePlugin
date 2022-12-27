@@ -1,21 +1,12 @@
 /**
- * COPYRIGHT DISCLAIMER:
+ * a note:
+ * the pp plugin is free software and comes with no warranty whatsoever. My claims of functionality
+ * are purely a figment of your imagination. All rights belong to their respective owners.
  * 
- * This file is part of PlaytimePlugin.
- * 
- * PlaytimePlugin is free software: you can redistribute 
- * it and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * PlaytimePlugin is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with PlaytimePlugin. If not, see <https://www.gnu.org/licenses/>.
+ * Ha. there now you can't sue me when it doesn't work :)
  *
  * @author Ben Staehle
- * @date 5/15/22
+ * @date 8/13/22
  */
 
 package org.ben.plugin.io;
@@ -29,13 +20,23 @@ import java.util.ArrayList;
 public class ParseFile {
     protected static List<String> lines;
 
-    public static void readFile(File f) throws Exception {
+    protected static void readFile(File f) throws Exception {
         BufferedReader br = new BufferedReader(new FileReader(f.getName()));
         lines = new ArrayList<String>();
         String line = "";
         while((line = br.readLine()) != null) {
             lines.add(line);
         }
+    }
+
+    public static int readStevenFile(File f) throws Exception {
+        BufferedReader br = new BufferedReader(new FileReader(f.getName()));
+        String line = "";
+        while((line = br.readLine()) != null) {
+            br.close();
+            return Integer.parseInt(line);
+        }
+        return -1;
     }
 
     public static synchronized boolean existsInFile(File f, PlayerTime p) throws Exception{
@@ -97,5 +98,31 @@ public class ParseFile {
         }
         br.close();
         return toRet;
+    }
+
+    public static List<String> getLines() {
+        if(lines.size() == 0) {
+            try {
+                readFile(WriteFile.dataFile);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return lines;
+    }
+
+    public static List<PlayerTime> getAllPlayers(File f) throws Exception{
+        if(lines == null || lines.size() == 0) {
+            readFile(f);
+        }
+        BufferedReader br = new BufferedReader(new FileReader(f.getName()));
+        String line = "";
+        ArrayList<PlayerTime> toReturn = new ArrayList<>();
+        while((line = br.readLine()) != null) {
+            String[] args = line.split("~");
+            toReturn.add(new PlayerTime(args[0].trim(), args[1].trim(), args[2].trim(), f));  
+        }
+        br.close();
+        return toReturn;
     }
 }

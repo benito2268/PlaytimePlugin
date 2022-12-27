@@ -1,21 +1,12 @@
 /**
- * COPYRIGHT DISCLAIMER:
+ * a note:
+ * the pp plugin is free software and comes with no warranty whatsoever. My claims of functionality
+ * are purely a figment of your imagination. All rights belong to their respective owners.
  * 
- * This file is part of PlaytimePlugin.
- * 
- * PlaytimePlugin is free software: you can redistribute 
- * it and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * PlaytimePlugin is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with PlaytimePlugin. If not, see <https://www.gnu.org/licenses/>.
+ * Ha. there now you can't sue me when it doesn't work :)
  *
  * @author Ben Staehle
- * @date 5/15/22
+ * @date 8/13/22
  */
 
 package org.ben.plugin.io;
@@ -29,6 +20,8 @@ public class PlayerTime {
     protected long totalTimeAtLogin;
     public File inFile;
     protected long inFileTime;
+    public boolean hasSpamEnabled = true;
+    public boolean hasDmEnabled = true;
 
     public PlayerTime(String name, String uuid, File inFile) {
         this.name = name;
@@ -80,10 +73,18 @@ public class PlayerTime {
     }
 
     public long getTotalTime() {
-        return totalTimeAtLogin + (System.currentTimeMillis() - loginTime) - 5; //to accout for small delay running code
+        return totalTimeAtLogin + (System.currentTimeMillis() - loginTime);
     }
 
     public long getTotalTimeInFile() {
         return this.inFileTime;
+    }
+
+    public void toggleSpamStatus() {
+        this.hasSpamEnabled = !hasSpamEnabled;
+    }
+
+    public void toggleDmStatus() {
+        this.hasDmEnabled = !hasDmEnabled;
     }
 }

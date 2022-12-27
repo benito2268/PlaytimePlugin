@@ -1,5 +1,5 @@
 name: PlaytimePlugin
-version: 1.2
+version: 1.5
 author: ben_staehle
 api-version: 1.14
 main: org.ben.plugin.PP

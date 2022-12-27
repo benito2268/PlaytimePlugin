@@ -1,21 +1,12 @@
 /**
- * COPYRIGHT DISCLAIMER:
+ * a note:
+ * the pp plugin is free software and comes with no warranty whatsoever. My claims of functionality
+ * are purely a figment of your imagination. All rights belong to their respective owners.
  * 
- * This file is part of PlaytimePlugin.
- * 
- * PlaytimePlugin is free software: you can redistribute 
- * it and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * PlaytimePlugin is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with PlaytimePlugin. If not, see <https://www.gnu.org/licenses/>.
+ * Ha. there now you can't sue me when it doesn't work :)
  *
  * @author Ben Staehle
- * @date 5/15/22
+ * @date 8/13/22
  */
 
 package org.ben.plugin.io;
@@ -30,7 +21,11 @@ import java.io.FileOutputStream;
 
 public class WriteFile {
     protected static boolean created = false;
+    protected static boolean stevenCreated = false;
+    protected static boolean simonCreated = false;
     public static File dataFile;
+    public static File stevenFile;
+    public static File simonFile;
 
     public static File createFile() throws Exception {
         dataFile = new File("playertime.pp");
@@ -38,17 +33,46 @@ public class WriteFile {
         return dataFile;
     }
 
+    public static File createStevenFile() throws Exception {
+        stevenFile = new File("steven.pp");
+        if(stevenFile.createNewFile()) {stevenCreated = true;}
+        return stevenFile;
+    }
+
+    public static File createSimonFile() throws Exception{
+        simonFile = new File("simon.pp");
+        if(simonFile.createNewFile()) {simonCreated = true;}
+        return simonFile;
+    }
+
     public static synchronized void newEntry(PlayerTime p) throws Exception {
-        if(!dataFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified");}
+        if(!dataFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified " + dataFile.getName());}
         BufferedWriter bw = new BufferedWriter(new FileWriter(dataFile.getName(), true));
         if(!ParseFile.existsInFile(dataFile, p)) {
             bw.write(p.getName() + "~" + p.getUuid() + "~" + "0\n");
         }
+        bw.flush();
         bw.close();
     }
 
+    public static void stevenEntry(int hits) throws Exception{
+        if(!stevenFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified " + stevenFile.getName());}
+        FileOutputStream fout = new FileOutputStream(stevenFile);
+        fout.write(String.valueOf(hits).getBytes());
+        fout.flush();
+        fout.close();
+    }
+
+    public static void simonEntry(int hits) throws Exception {
+        if(!simonFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified " + simonFile.getName());}
+        FileOutputStream fout = new FileOutputStream(simonFile);
+        fout.write(String.valueOf(hits).getBytes());
+        fout.flush();
+        fout.close();
+    }
+
     public static void updateEntry(PlayerTime p) throws Exception {
-        if(!dataFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified");}
+        if(!dataFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified " + dataFile.getName());}
         BufferedReader br = new BufferedReader(new FileReader(dataFile.getName()));
         StringBuffer inputBuffer = new StringBuffer();
         String line = "";
@@ -72,6 +96,18 @@ public class WriteFile {
         }
         FileOutputStream fout = new FileOutputStream(dataFile);
         fout.write(outputStr.getBytes());
+        fout.flush();
         fout.close();
+    }
+    
+    public static long getDirSizeBytes(File directory) {
+        long length = 0;
+        for (File file : directory.listFiles()) {
+            if (file.isFile())
+                length += file.length();
+            else
+                length += getDirSizeBytes(file);
+        }
+        return length;
     }
 }

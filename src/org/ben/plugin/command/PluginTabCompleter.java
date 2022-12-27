@@ -1,21 +1,12 @@
 /**
- * COPYRIGHT DISCLAIMER:
+ * a note:
+ * the pp plugin is free software and comes with no warranty whatsoever. My claims of functionality
+ * are purely a figment of your imagination. All rights belong to their respective owners.
  * 
- * This file is part of PlaytimePlugin.
- * 
- * PlaytimePlugin is free software: you can redistribute 
- * it and/or modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation, 
- * either version 3 of the License, or (at your option) any later version.
- * PlaytimePlugin is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty 
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with PlaytimePlugin. If not, see <https://www.gnu.org/licenses/>.
+ * Ha. there now you can't sue me when it doesn't work :)
  *
  * @author Ben Staehle
- * @date 5/15/22
+ * @date 8/13/22
  */
 
 package org.ben.plugin.command;
@@ -37,12 +28,26 @@ public class PluginTabCompleter implements TabCompleter{
         if(args.length == 1) {
             try {
                 toRet = ParseFile.getNamesInFile(WriteFile.dataFile);
-                toRet.add("~info");
+                toRet.add("restrain");
+                toRet.add("spam");
+                toRet.add("~changelog");
                 toRet.add("~score");
                 return toRet;
             } catch(Exception e) {
                 return toRet;
             }
+        } else if(args.length == 2) {
+            try {
+                if(args[1].equals("restrain") || args[1].equals("spam")) {
+                    toRet.add("yes");
+                    toRet.add("no");
+                } else {
+                    toRet = ParseFile.getNamesInFile(WriteFile.dataFile);
+                }
+            } catch(Exception e) {
+                return toRet;
+            }
+            return toRet;
         }
         return toRet;
     }
