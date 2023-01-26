@@ -105,7 +105,7 @@ public class PPEvent implements Listener {
             }
         } else if (e.getEntity() instanceof Player && e.getDamager() instanceof Guardian) {
             Player simon = (Player)e.getEntity();
-            if(simon.getName().equalsIgnoreCase("L3gob3rt")) { //Teddy__Burr
+            if(simon.getName().equalsIgnoreCase("Teddy__Burr")) { //Teddy__Burr
                 try {
                     int i = ParseFile.readStevenFile(WriteFile.simonFile) + 1;
                     if(i % 100 == 0 && i != 0 && i != 100) {

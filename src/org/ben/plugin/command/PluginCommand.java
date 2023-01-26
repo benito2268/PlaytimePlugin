@@ -53,7 +53,9 @@ public class PluginCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.DARK_PURPLE + "you=" + p.getName());
                     p.sendMessage(ChatColor.DARK_PURPLE + "file=" + WriteFile.dataFile.toString());
                     p.sendMessage(ChatColor.DARK_PURPLE + "online=" + PPEvent.online.size());
-                    p.sendMessage(ChatColor.DARK_PURPLE + "cmd=" + this.toString());
+                    p.sendMessage(ChatColor.DARK_PURPLE + "");
+                    p.sendMessage(ChatColor.DARK_PURPLE + "");
+
                 } else if (args[0].equals("~score")) {
                     printScoreBoard(p);
                 } else if(args[0].equals("~realscore")) {
@@ -67,7 +69,6 @@ public class PluginCommand implements CommandExecutor {
                 } else if(args[0].equals("~backup")) {
                     //TODO remove maybe?
                     p.getServer().broadcastMessage(ChatColor.GOLD + "[pp alert] the server is backing up! Your data is saved but it may freeze for several seconds during the upload");
-                    p.getServer().broadcastMessage(ChatColor.RED + "pro-tip: yell at whoever started the upload :)");
                     Backup.backup(p);
                 } else {
                     //two arg player message

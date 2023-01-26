@@ -22,7 +22,7 @@ import org.ben.plugin.io.WriteFile;
 
 public class Backup {
     public static final String OUTPUT_ZIP_FILE = "pp_worldsave.zip";
-    public static final String INPUT_DIR = "C:\\1.19 Vanilla Server\\world";
+    public static final String INPUT_DIR = "C:\\vanilla_server_19\\world";
     public static final DecimalFormat df = new DecimalFormat();
 
     public static void backup(Player p) {

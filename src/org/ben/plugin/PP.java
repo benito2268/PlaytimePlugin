@@ -73,8 +73,8 @@ public class PP extends JavaPlugin{
         backupWarn = new BukkitRunnable() {
             @Override
             public void run() {
-                getServer().broadcastMessage(ChatColor.GOLD + "[pp 5 minute warning] the server is backing up in about 5 minutes");
-                getServer().broadcastMessage(ChatColor.GOLD + "all progress will be saved but it may freeze for 10-20 seconds during the upload");    
+                getServer().broadcastMessage(ChatColor.GOLD + "pp 5 minute warning");
+               //getServer().broadcastMessage(ChatColor.GOLD + "all progress will be saved but it may freeze for 10-20 seconds during the upload");    
             }
         }.runTaskTimer(this, 20L * 1500L, 20L * 86400L);
 
@@ -84,8 +84,8 @@ public class PP extends JavaPlugin{
             public void run() {
                 try {
                     Bukkit.dispatchCommand(getServer().getConsoleSender(), "save-all");
-                    getServer().broadcastMessage(ChatColor.RED + "[pp alert] the server is backing up! Don't worry your data is saved");
-                    getServer().broadcastMessage(ChatColor.RED + "but the server may freeze for 10-20 seconds during the upload");
+                    getServer().broadcastMessage(ChatColor.RED + "pp time");
+                    //getServer().broadcastMessage(ChatColor.RED + "but the server may freeze for 10-20 seconds during the upload");
         
                     Backup.backup(PlugRef);
                 } catch(Exception e) {
