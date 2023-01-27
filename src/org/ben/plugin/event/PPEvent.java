@@ -12,6 +12,7 @@
 package org.ben.plugin.event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -139,6 +140,27 @@ public class PPEvent implements Listener {
                 } catch(Exception ex) {
                     e.getEntity().getServer().broadcastMessage(ChatColor.RED + "yikes! Simon got hit by a guardian, and broke the plugin rip");
                 }  
+            }
+        }
+    }
+
+    @EventHandler
+    public static void onBlockPlaceEvent(BlockPlaceEvent b) {
+        if(b.getPlayer().getName().equals("Xererain")) {
+            if(b.getBlock().getType() == Material.BAMBOO_SAPLING) {
+            Random r = new Random();
+            int rand = r.nextInt(0, 10);
+                if(rand == 1) {
+                    try {
+                        int i = ParseFile.readStevenFile(WriteFile.wyleFile) + 1;
+                        b.getPlayer().getServer().broadcastMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + "zoinks! Xererain is voilating someone with bamboo! better go check your base!");
+                        b.getPlayer().getServer().broadcastMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + "for the love of god someone please stop him at " + (int)b.getPlayer().getLocation().getX() + ", " + (int)b.getPlayer().getLocation().getY() + ", " + (int)b.getPlayer().getLocation().getZ());
+                        b.getPlayer().getServer().broadcastMessage(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "we estimate the impact at " + String.valueOf(i * 10) + " boisterous baneful bamboo!");
+                        WriteFile.wyleEntry(i);
+                    } catch (Exception e) {
+                        return;
+                    }
+                } 
             }
         }
     }

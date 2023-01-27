@@ -85,6 +85,23 @@ public class ParseFile {
         return null;
     }
 
+    public static long getMillisByPlayerName(File f, String playername) throws Exception {
+        if(lines == null || lines.size() == 0) {
+            readFile(f);
+        }
+        BufferedReader br = new BufferedReader(new FileReader(f.getName()));
+        String line = "";
+        while((line = br.readLine()) != null) {
+            if(line.contains(playername)) {
+                br.close();
+                String[] args = line.split("~");
+                return Long.parseLong(args[2].trim());
+            }
+        }
+        br.close();
+        return -1L;
+    }
+
     public static List<String> getNamesInFile(File f) throws Exception{
         List<String> toRet = new ArrayList<String>(); 
         if(lines == null || lines.size() == 0) {

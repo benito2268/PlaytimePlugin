@@ -23,9 +23,11 @@ public class WriteFile {
     protected static boolean created = false;
     protected static boolean stevenCreated = false;
     protected static boolean simonCreated = false;
+    protected static boolean wyleCreated = false;
     public static File dataFile;
     public static File stevenFile;
     public static File simonFile;
+    public static File wyleFile;
 
     public static File createFile() throws Exception {
         dataFile = new File("playertime.pp");
@@ -43,6 +45,12 @@ public class WriteFile {
         simonFile = new File("simon.pp");
         if(simonFile.createNewFile()) {simonCreated = true;}
         return simonFile;
+    }
+
+    public static File createWyleFile() throws Exception {
+        wyleFile = new File("wyle.pp");
+        if(wyleFile.createNewFile()) {wyleCreated = true;}
+        return wyleFile;
     }
 
     public static synchronized void newEntry(PlayerTime p) throws Exception {
@@ -67,6 +75,14 @@ public class WriteFile {
         if(!simonFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified " + simonFile.getName());}
         FileOutputStream fout = new FileOutputStream(simonFile);
         fout.write(String.valueOf(hits).getBytes());
+        fout.flush();
+        fout.close();
+    }
+
+    public static void wyleEntry(int atrocities) throws Exception {
+        if(!wyleFile.exists()) {throw new FileNotFoundException("fatal: system could not find the file specified " + wyleFile.getName());}
+        FileOutputStream fout = new FileOutputStream(wyleFile);
+        fout.write(String.valueOf(atrocities).getBytes());
         fout.flush();
         fout.close();
     }

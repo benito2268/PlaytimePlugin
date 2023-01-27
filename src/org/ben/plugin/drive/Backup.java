@@ -72,11 +72,11 @@ public class Backup {
         //disable the server's autosave
         ConsoleCommandSender sender = p.getServer().getConsoleSender();
         //disable autosave so no funny thread collisions
-        Bukkit.dispatchCommand(sender, "save-off");
+        //Bukkit.dispatchCommand(sender, "save-off");
 
         //zip the world folder
         File input = new File(INPUT_DIR);
-        p.getServer().broadcastMessage(ChatColor.GOLD + "compressing files... about " + df.format((double)(WriteFile.getDirSizeBytes(input) / 1000000.0)) + "mb");
+        //p.getServer().broadcastMessage(ChatColor.GOLD + "compressing files... about " + df.format((double)(WriteFile.getDirSizeBytes(input) / 1000000.0)) + "mb");
         long time = System.currentTimeMillis();
         Zip appZip = new Zip(INPUT_DIR);
         appZip.generateFileList(input);
@@ -84,17 +84,17 @@ public class Backup {
             appZip.zipIt(OUTPUT_ZIP_FILE);
         } catch(Exception e) {
             //ouf
-            p.getServer().broadcastMessage(ChatColor.RED + "an exception occured while compressing " + e.toString());
-            p.getServer().broadcastMessage(ChatColor.RED + "note that if you're seeing this message the compression did not complete");
+            //p.getServer().broadcastMessage(ChatColor.RED + "an exception occured while compressing " + e.toString());
+            //p.getServer().broadcastMessage(ChatColor.RED + "note that if you're seeing this message the compression did not complete");
         }
-        p.getServer().broadcastMessage(ChatColor.GREEN + "done! (" + (System.currentTimeMillis() - time) + "ms)");
+        //p.getServer().broadcastMessage(ChatColor.GREEN + "done! (" + (System.currentTimeMillis() - time) + "ms)");
 
         //restore autosave 
-        Bukkit.dispatchCommand(sender, "save-on");
+        //Bukkit.dispatchCommand(sender, "save-on");
 
         //upload to google drive
         time = System.currentTimeMillis();
-        p.getServer().broadcastMessage(ChatColor.GOLD + "uploading...");
+        //p.getServer().broadcastMessage(ChatColor.GOLD + "uploading...");
         try {
             //delete old file
             DriveAPI.deleteBasic();
@@ -103,9 +103,9 @@ public class Backup {
             DriveAPI.uploadBasic();
         } catch(Exception e) {
             e.printStackTrace();
-            p.getServer().broadcastMessage(ChatColor.RED + "yikes");
+            //p.getServer().broadcastMessage(ChatColor.RED + "yikes");
             return;
         }
-        p.getServer().broadcastMessage(ChatColor.GREEN + "done! (" + (System.currentTimeMillis() - time) + "ms)");
+        //p.getServer().broadcastMessage(ChatColor.GREEN + "done! (" + (System.currentTimeMillis() - time) + "ms)");
     }
 }

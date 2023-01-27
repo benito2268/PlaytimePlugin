@@ -35,14 +35,11 @@ public class PluginCommand implements CommandExecutor {
         if(command.getName().equalsIgnoreCase("playtime")) {
             if(args.length == 1) {
                 if(args[0].equals("~changelog")) {
-                    p.sendMessage("PlaytimePlugin version 1.5");
-                    p.sendMessage("Last Updated: Tuesday, December 27 at 9:21AM");
+                    p.sendMessage("PlaytimePlugin version 1.6");
+                    p.sendMessage("Last Updated: Thursday, January 26th at 9:02PM");
                     p.sendMessage("View the code here: https://github.com/benito2268/PlaytimePlugin");
                     p.sendMessage("==========================================");
-                    p.sendMessage("- the plugin grows ever more janky");
-                    p.sendMessage("- bugs including the plugin's sub-par counting skills, still exist (I think?)");
-                    p.sendMessage("- fixed some other bugs");
-                    p.sendMessage("- still a fancy new webpage ;)");
+                    p.sendMessage("- the shinest pp yet");
                 } else if(args[0].equals("~debug")) {
                     p.sendMessage(ChatColor.DARK_PURPLE + "[DEBUG - SYSTEM INFO]");
                     p.sendMessage(ChatColor.DARK_PURPLE + "processorinfo=" + System.getProperty("os-arch") + " " + Runtime.getRuntime().availableProcessors() + " processors");
@@ -53,8 +50,6 @@ public class PluginCommand implements CommandExecutor {
                     p.sendMessage(ChatColor.DARK_PURPLE + "you=" + p.getName());
                     p.sendMessage(ChatColor.DARK_PURPLE + "file=" + WriteFile.dataFile.toString());
                     p.sendMessage(ChatColor.DARK_PURPLE + "online=" + PPEvent.online.size());
-                    p.sendMessage(ChatColor.DARK_PURPLE + "");
-                    p.sendMessage(ChatColor.DARK_PURPLE + "");
 
                 } else if (args[0].equals("~score")) {
                     printScoreBoard(p);
@@ -68,8 +63,8 @@ public class PluginCommand implements CommandExecutor {
                     }
                 } else if(args[0].equals("~backup")) {
                     //TODO remove maybe?
-                    p.getServer().broadcastMessage(ChatColor.GOLD + "[pp alert] the server is backing up! Your data is saved but it may freeze for several seconds during the upload");
-                    Backup.backup(p);
+                    p.getServer().broadcastMessage(ChatColor.RED + "I'm sorry Dave, I'm afriad you can't do that");
+                    //Backup.backup(p);
                 } else {
                     //two arg player message
                     try {

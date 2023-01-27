@@ -77,6 +77,16 @@ public class PlayerTime {
     }
 
     public long getTotalTimeInFile() {
+        //first update the variable
+        try {
+            long l = ParseFile.getMillisByPlayerName(this.inFile, this.name);
+            if(l >= 0) {
+                this.inFileTime = l;
+            }
+        } catch (Exception e) {
+            return -1L;
+        }
+
         return this.inFileTime;
     }
 

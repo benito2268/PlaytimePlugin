@@ -31,6 +31,8 @@ public class PP extends JavaPlugin{
     private BukkitTask autosave;
     private BukkitTask backupWarn;
     private BukkitTask backup;
+    private BukkitTask saveOn;
+    private BukkitTask saveOff;
 
     @Override
     public void onEnable() {
@@ -41,6 +43,7 @@ public class PP extends JavaPlugin{
             WriteFile.createFile();
             WriteFile.createStevenFile();
             WriteFile.createSimonFile();
+            WriteFile.createWyleFile();
             getServer().getConsoleSender().sendMessage(ChatColor.BLUE + "[pp info] The dataFile loaded was... " + WriteFile.dataFile.toString());
         } catch(Exception e) {
             getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[pp error] fatal error loading plugin pp");
@@ -68,7 +71,7 @@ public class PP extends JavaPlugin{
                     getServer().getConsoleSender().sendMessage(ChatColor.GREEN + "[pp success] autosave sucessful");
                 }
             }
-        }.runTaskTimer(this, 20L * 1800L, 20L * 1800L);
+        }.runTaskTimer(this, 20L * 1800L, 20L * 1800L); 
 
         backupWarn = new BukkitRunnable() {
             @Override
@@ -76,24 +79,43 @@ public class PP extends JavaPlugin{
                 getServer().broadcastMessage(ChatColor.GOLD + "pp 5 minute warning");
                //getServer().broadcastMessage(ChatColor.GOLD + "all progress will be saved but it may freeze for 10-20 seconds during the upload");    
             }
-        }.runTaskTimer(this, 20L * 1500L, 20L * 86400L);
+        }.runTaskTimer(this, 20L * 1500L, 20L * 86400L); //this, 20L * 1500L, 20L * 86400L
 
+        saveOff = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.dispatchCommand(getServer().getConsoleSender(), "save-all");
+                getServer().broadcastMessage(ChatColor.RED + "pp time");
+                Bukkit.dispatchCommand(getServer().getConsoleSender(), "save-off");
+               //getServer().broadcastMessage(ChatColor.GOLD + "all progress will be saved but it may freeze for 10-20 seconds during the upload");    
+            }
+        }.runTaskTimer(this, 20L * 1795L, 20L * 86400L); 
+
+        saveOn = new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.dispatchCommand(getServer().getConsoleSender(), "save-on");
+               //getServer().broadcastMessage(ChatColor.GOLD + "all progress will be saved but it may freeze for 10-20 seconds during the upload");    
+            }
+        }.runTaskTimer(this, 20L * 2100L, 20L * 86400L); //five minutes after the backup
 
         backup = new BukkitRunnable() {
             @Override
             public void run() {
                 try {
-                    Bukkit.dispatchCommand(getServer().getConsoleSender(), "save-all");
-                    getServer().broadcastMessage(ChatColor.RED + "pp time");
+                    //Bukkit.dispatchCommand(getServer().getConsoleSender(), "save-all");
+                    //getServer().broadcastMessage(ChatColor.RED + "pp time");
                     //getServer().broadcastMessage(ChatColor.RED + "but the server may freeze for 10-20 seconds during the upload");
         
                     Backup.backup(PlugRef);
                 } catch(Exception e) {
-                    getServer().broadcastMessage(ChatColor.RED + e.getClass().toString() + e.getMessage());
+                    //getServer().broadcastMessage(ChatColor.RED + e.getClass().toString() + e.getMessage());
                 }
             }
-        }.runTaskTimer(this, 20L * 1800L, 20L * 86400L);
+        }.runTaskTimerAsynchronously(this, 20L * 1800, 20L * 86400L); //this, 20L * 1800L, 20L * 86400L
     }
+
+    
 
     @Override
     public void onDisable() {
