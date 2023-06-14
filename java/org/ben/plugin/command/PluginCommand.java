@@ -29,11 +29,9 @@ public class PluginCommand implements CommandExecutor {
                     p.sendMessage("PlaytimePlugin version 1.7");
                     p.sendMessage("Last Updated: Tuesday, June 13th at 11:01PM");
                     p.sendMessage("View the code here: https://github.com/benito2268/PlaytimePlugin");
-                    p.sendMessage("==========================================");
-                    p.sendMessage("- the shinest pp yet");
                 } else if(args[0].equals("~about")) {
                     p.sendMessage(ChatColor.WHITE + "Plugin Information");
-                    p.sendMessage("version: 1.7 = 6-13-23");
+                    p.sendMessage("version: 061323.17.19");
                     p.sendMessage("...for minecraft 1.20.1");
                     p.sendMessage("api: org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT");
                     p.sendMessage("compiler: Java HotSpot 17.0.3 (64-bit)");
@@ -225,6 +223,9 @@ public class PluginCommand implements CommandExecutor {
         }
     }
 
+    /*
+    * converts millis to a string of the form HH-MM-SS
+    */
     public static String getTimeString(long millis) {
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
         millis -= TimeUnit.HOURS.toMillis(hours);
@@ -235,7 +236,7 @@ public class PluginCommand implements CommandExecutor {
     }
 
     /**
-     *
+     * saves time for all online players
      */
     public static void saveAll() {
         ArrayList<PlayerTime> onlinePlayers = new ArrayList<>(PPEvent.online.values());

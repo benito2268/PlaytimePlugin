@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import java.util.Arrays;
+import java.util.Enumeration;
 
 public class PPEvent implements Listener {
     public static Hashtable<String, PlayerTime> online = new Hashtable<>();
@@ -65,17 +66,17 @@ public class PPEvent implements Listener {
                 if(steven.getName().equalsIgnoreCase("Steven1468")) {
                     try{
                         int i = ParseFile.readStevenFile(WriteFile.stevenFile) + 1;
-                        if(i % 100 == 0 && i != 0 && i != 1000) {
-                            e.getEntity().getServer().broadcastMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "[special pp] Congratulations Steven! you have been hit by your " + i + "th skeleton");
-                            e.getEntity().getServer().broadcastMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "To commemorate this momentous occasion you get to have the arrow!");
+                        if(i % 100 == 0 && i != 0 && i != 300) {
+                            filterBroadcast(e.getEntity().getServer(), ChatColor.GOLD + ChatColor.BOLD.toString() + "[special pp] Congratulations Steven! you have been hit by your " + i + "th skeleton");
+                            filterBroadcast(e.getEntity().getServer(), ChatColor.GOLD + ChatColor.BOLD.toString() + "To commemorate this momentous occasion you get to have the arrow!");
                             ItemStack item = new ItemStack(Material.ARROW);
                             ItemMeta arrowMeta = item.getItemMeta();
                             arrowMeta.setDisplayName(ChatColor.GOLD + ChatColor.MAGIC.toString() + "oljsl" + ChatColor.RESET + i + ChatColor.GOLD.toString() + ChatColor.MAGIC.toString() + "dkfjs");
                             item.setItemMeta(arrowMeta);
                             steven.getInventory().addItem(item);
-                        } else if(i == 1000) {
-                            e.getEntity().getServer().broadcastMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "[special pp] Congratulations Steven! you have been hit by your " + i + "th skeleton");
-                            e.getEntity().getServer().broadcastMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "I know you've been working hard for all those arrows so here's an extra special gift!");
+                        } else if(i == 300) {
+                            filterBroadcast(e.getEntity().getServer(), ChatColor.GOLD + ChatColor.BOLD.toString() + "[special pp] Congratulations Steven! you have been hit by your " + i + "th skeleton");
+                            filterBroadcast(e.getEntity().getServer(), ChatColor.GOLD + ChatColor.BOLD.toString() + "I know you've been working hard for all those arrows so here's an extra special gift!");
                             ItemStack itemB = new ItemStack(Material.BOW);
                             ItemMeta bowMeta = itemB.getItemMeta();
                             bowMeta.setDisplayName("mesothelioma");
@@ -84,9 +85,9 @@ public class PPEvent implements Listener {
                             itemB.setItemMeta(bowMeta);
                             steven.getInventory().addItem(itemB);
                         } else {
-                            e.getEntity().getServer().broadcastMessage(ChatColor.AQUA + ChatColor.BOLD.toString() + "oh no! Steven has been hit by a skeleton!");
-                            e.getEntity().getServer().broadcastMessage(ChatColor.AQUA + ChatColor.BOLD.toString() + "Congratulate him at " + (int)e.getEntity().getLocation().getX() + ", " + (int)e.getEntity().getLocation().getY() + ", " + (int)e.getEntity().getLocation().getZ());
-                            e.getEntity().getServer().broadcastMessage(ChatColor.AQUA + ChatColor.BOLD.toString() + "this brings the total to " + String.valueOf(i) + " spooky scary skeletons!");
+                            filterBroadcast(e.getEntity().getServer(), ChatColor.AQUA + ChatColor.BOLD.toString() + "oh no! Steven has been hit by a skeleton!");
+                            filterBroadcast(e.getEntity().getServer(), ChatColor.AQUA + ChatColor.BOLD.toString() + "Congratulate him at " + (int)e.getEntity().getLocation().getX() + ", " + (int)e.getEntity().getLocation().getY() + ", " + (int)e.getEntity().getLocation().getZ());
+                            filterBroadcast(e.getEntity().getServer(), ChatColor.AQUA + ChatColor.BOLD.toString() + "this brings the total to " + String.valueOf(i) + " spooky scary skeletons!");
                         }
                         WriteFile.stevenEntry(i);
                     } catch(Exception ex) {
@@ -100,8 +101,8 @@ public class PPEvent implements Listener {
                 try {
                     int i = ParseFile.readStevenFile(WriteFile.simonFile) + 1;
                     if(i % 100 == 0 && i != 0 && i != 100) {
-                        e.getEntity().getServer().broadcastMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "[special pp] Congratulations Simon! you have been hit by your " + i + "th guardian");
-                        e.getEntity().getServer().broadcastMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "To commemorate this momentous occasion you get to have their rarest drop! fishy");
+                        filterBroadcast(e.getEntity().getServer(), ChatColor.GOLD + ChatColor.BOLD.toString() + "[special pp] Congratulations Simon! you have been hit by your " + i + "th guardian");
+                        filterBroadcast(e.getEntity().getServer(), ChatColor.GOLD + ChatColor.BOLD.toString() + "To commemorate this momentous occasion you get to have their rarest drop! fishy");
                         ItemStack item = new ItemStack(Material.TROPICAL_FISH);
                         ItemMeta fishMeta = item.getItemMeta();
                         fishMeta.setDisplayName(ChatColor.GOLD + ChatColor.MAGIC.toString() + "oljsl" + ChatColor.RESET + "le fishe " + i + ChatColor.GOLD.toString() + ChatColor.MAGIC.toString() + "dkfjs");
@@ -109,8 +110,8 @@ public class PPEvent implements Listener {
                         simon.getInventory().addItem(item);
 
                     } else if(i == 100) {
-                        e.getEntity().getServer().broadcastMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "[special pp] Congratulations Simon! you have been hit by your " + i + "th guardian");
-                        e.getEntity().getServer().broadcastMessage(ChatColor.GOLD + ChatColor.BOLD.toString() + "100 is a lot of guardians! so I figured you should have a special pp prize");
+                        filterBroadcast(e.getEntity().getServer(), ChatColor.GOLD + ChatColor.BOLD.toString() + "[special pp] Congratulations Simon! you have been hit by your " + i + "th guardian");
+                        filterBroadcast(e.getEntity().getServer(), ChatColor.GOLD + ChatColor.BOLD.toString() + "100 is a lot of guardians! so I figured you should have a special pp prize");
                         ItemStack itemG = new ItemStack(Material.GUARDIAN_SPAWN_EGG);
                         ItemStack itemE = new ItemStack(Material.ELDER_GUARDIAN_SPAWN_EGG);
                         ItemMeta gMeta = itemG.getItemMeta();
@@ -122,9 +123,9 @@ public class PPEvent implements Listener {
                         simon.getInventory().addItem(itemE);
                         simon.getInventory().addItem(itemG);
                     } else {
-                        e.getEntity().getServer().broadcastMessage(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "yikes! Simon has been hit by a guardian!");
-                        e.getEntity().getServer().broadcastMessage(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "help him celebrate at " + (int)e.getEntity().getLocation().getX() + ", " + (int)e.getEntity().getLocation().getY() + ", " + (int)e.getEntity().getLocation().getZ());
-                        e.getEntity().getServer().broadcastMessage(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "this brings the total to " + String.valueOf(i) + " slippery slimey guardians!");
+                        filterBroadcast(e.getEntity().getServer(), ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "yikes! Simon has been hit by a guardian!");
+                        filterBroadcast(e.getEntity().getServer(), ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "help him celebrate at " + (int)e.getEntity().getLocation().getX() + ", " + (int)e.getEntity().getLocation().getY() + ", " + (int)e.getEntity().getLocation().getZ());
+                        filterBroadcast(e.getEntity().getServer(), ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "this brings the total to " + String.valueOf(i) + " slippery slimey guardians!");
                     }
                     WriteFile.simonEntry(i);
                 } catch(Exception ex) {
@@ -136,16 +137,16 @@ public class PPEvent implements Listener {
 
     @EventHandler
     public static void onBlockPlaceEvent(BlockPlaceEvent b) {
-        if(b.getPlayer().getName().equals("Xererain")) {
+        if(b.getPlayer().getName().equals("L3goB3rt")) { //Xererain
             if(b.getBlock().getType() == Material.BAMBOO_SAPLING) {
                 Random r = new Random();
                 int rand = r.nextInt(0, 10);
                 if(rand == 1) {
                     try {
                         int i = ParseFile.readStevenFile(WriteFile.wyleFile) + 1;
-                        b.getPlayer().getServer().broadcastMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + "zoinks! Xererain is voilating someone with bamboo! better go check your base!");
-                        b.getPlayer().getServer().broadcastMessage(ChatColor.GREEN + ChatColor.BOLD.toString() + "for the love of god someone please stop him at " + (int)b.getPlayer().getLocation().getX() + ", " + (int)b.getPlayer().getLocation().getY() + ", " + (int)b.getPlayer().getLocation().getZ());
-                        b.getPlayer().getServer().broadcastMessage(ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "we estimate the impact at " + String.valueOf(i * 10) + " boisterous baneful bamboo!");
+                        filterBroadcast(b.getPlayer().getServer(), ChatColor.GREEN + ChatColor.BOLD.toString() + "zoinks! Xererain is voilating someone with bamboo! better go check your base!");
+                        filterBroadcast(b.getPlayer().getServer(), ChatColor.GREEN + ChatColor.BOLD.toString() + "for the love of god someone please stop him at " + (int)b.getPlayer().getLocation().getX() + ", " + (int)b.getPlayer().getLocation().getY() + ", " + (int)b.getPlayer().getLocation().getZ());
+                        filterBroadcast(b.getPlayer().getServer(), ChatColor.LIGHT_PURPLE + ChatColor.BOLD.toString() + "we estimate the impact at " + String.valueOf(i * 10) + " boisterous baneful bamboo!");
                         WriteFile.wyleEntry(i);
                     } catch (Exception e) {
                         return;
@@ -221,6 +222,16 @@ public class PPEvent implements Listener {
         if(i == 1) {
             player.sendMessage(ChatColor.RED + "[bad pp] the animal did not like you shaving it, it bites you, you don't feel good anymore - lose 10 pp");
             PPEvent.online.get(player.getName()).setTimeImmediate(PPEvent.online.get(player.getName()).getLoginTime() + 10);
+        }
+    }
+
+    public static void filterBroadcast(org.bukkit.Server server, String text) {
+        Enumeration<String> e = PPEvent.online.keys();
+        while(e.hasMoreElements()) {
+            String name = e.nextElement();
+            if(PPEvent.online.get(name).hasSpamEnabled) {
+                server.getPlayer(name).sendMessage(text);
+            }
         }
     }
 }
